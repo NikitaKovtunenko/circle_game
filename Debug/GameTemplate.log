@@ -1,0 +1,6 @@
+﻿  Game.cpp
+C:\Users\Konstantin\Desktop\GameTemplate\Game.cpp(70,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Konstantin\Desktop\GameTemplate\Game.cpp(71,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Konstantin\Desktop\GameTemplate\Game.cpp(189,30): warning C4018: '<=': signed/unsigned mismatch
+C:\Users\Konstantin\Desktop\GameTemplate\Game.cpp(191,33): warning C4018: '<=': signed/unsigned mismatch
+  GameTemplate.vcxproj -> C:\Users\Konstantin\Desktop\GameTemplate\Debug\GameTemplate.exe
