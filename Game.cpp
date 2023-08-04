@@ -4,6 +4,14 @@
 #include <algorithm>
 #include "Game.h"
 #include <iostream>
+#include "nums.h"
+
+#define RECTSIZE 40
+#define RADIUS 50
+#define WHITE 0xffffff
+#define BLACK 0x000000
+
+
 //
 //  You are free to modify this file
 //
@@ -20,6 +28,9 @@
 int direction ;
 bool rectCatch;
 bool rectPlay;
+int trend;
+int score;
+
 
 
 // initialize game data in this function
@@ -28,7 +39,9 @@ void initialize()
     direction = 1;
     rectCatch = 0;
     rectPlay = 0;
+    score = 0;
 
+    
 }
 
 // this function is called to update game data,
@@ -89,9 +102,10 @@ void FillWin()
 
 void Craze(uint32_t x, uint32_t y, uint32_t r, int32_t direction)
 {
+     
     static double angle1 = 0;
 
-    angle1 += 0.1 *direction;  // or some other value.  Higher numbers = circles faster
+    angle1 += 0.1 * direction;  // or some other value.  Higher numbers = circles faster
 
     double x1 = cos(angle1) * r;
     double y1 = sin(angle1) * r;
@@ -99,7 +113,7 @@ void Craze(uint32_t x, uint32_t y, uint32_t r, int32_t direction)
     x1 += x;
     y1 += y;
 
-    FillCircle((int)x1, (int)y1, 40, 0xffffff);
+    FillCircle((int)x1, (int)y1, RADIUS, WHITE);
 
     static double angle2 = 600;
 
@@ -111,87 +125,162 @@ void Craze(uint32_t x, uint32_t y, uint32_t r, int32_t direction)
     x2 += x;
     y2 += y;
 
-    FillCircle((int)x2, (int)y2, 40, 0xffffff);
+    FillCircle((int)x2, (int)y2, RADIUS, WHITE);
 
 
-   static int cx;
-   static int cy;
-   static int color2;
+    static int cx;
+    static int cy;
+    static int color2;
 
     if (!rectPlay)
     {
-          cx = 1 + rand() % SCREEN_WIDTH -1 ;
-          cy = SCREEN_HEIGHT;
+        cx = 1 + rand() % SCREEN_WIDTH - 1;
+        cy = SCREEN_HEIGHT;
 
+        if (cx < SCREEN_HEIGHT / 3)
+            trend = 1;
+        else if (cx < (SCREEN_HEIGHT / 3) * 2 && cx > SCREEN_HEIGHT / 3)
+            trend = 2;
+        else if (cx < SCREEN_HEIGHT && cx >(SCREEN_HEIGHT / 3) * 2)
+            trend = 3;
 
-          if (!((0 + rand() % 10) % 2))
-             color2 = 0xffffff;
-          else
-             color2 = 0x00000;
+        if (!((0 + rand() % 10) % 2))
+            color2 = BLACK;
+        else
+            color2 = WHITE;
 
-          rectPlay = true;
+        rectPlay = true;
+
     }
     else
     {
-        cx +=5;
-        cy -= 5;
+        if (trend == 1)
+            cx += 10;
+        if (trend == 3)
+            cx -= 10;
+
+        cy -= 10;
     }
+ 
+
    
 
-    FillRect(cx, cy, 50, 50, color2);
-   
-    //ѕровер€ем входит ли наша точка в круг ???
-    //если да переводим игру по новой
-  
-    //static double angle3 = 75;
+    FillRect(cx, cy, RECTSIZE, RECTSIZE, color2);
 
-    //angle3 += 0.1 * direction;  // or some other value.  Higher numbers = circles faster
-
-    //double x3 = cos(angle3) * r;
-    //double y3 = sin(angle3) * r;
-
-    //x3 += x;
-    //y3 += y;
-    //FillCircle((int)x3, (int)y3, 5, 0xffffff);
+    int dx = (cy -25) - x1;
+    int dy = (cx +25 )- y1;
+    int multi = dx * dx + dy * dy;
 
 
-    //static double angle4 = 100;
+    if (multi <= RADIUS*RADIUS)
+    {
+        rectPlay = false;
+        if(color2 == BLACK)
+            schedule_quit_game();
+        score++;
+    }
+     
 
-    //angle4 += 0.1 * direction;  // or some other value.  Higher numbers = circles faster
+     dx = (cy - 25) - x2;
+     dy = (cx + 25) - y2;
+     multi = dx * dx + dy * dy;
 
-    //double x4 = cos(angle4) * r;
-    //double y4 = sin(angle4) * r;
+    if (multi <= RADIUS * RADIUS)
+    {
+        rectPlay = false;
+        if (color2 == BLACK)
+            schedule_quit_game();
+        score++;
+    }
 
-    //x4 += x;
-    //y4 += y;
-    //FillCircle((int)x4, (int)y4, 5, 0xffffff);
+     int first = score / 10;
+     int second = score - first *10;
 
-    //static double angle5 = 125;
+    
+         switch (first)
+         {
+         case 1: DrawNums(40,num1);
+             break;
+         case 2:DrawNums(45, num2);
+             break;
+         case 3:DrawNums(45, num3);
+             break;
+         case 4:DrawNums(45, num4);
+             break;
+         case 5:DrawNums(45, num5);
+             break;
+         case 6:DrawNums(45, num6);
+             break;
+         case 7:DrawNums(45, num7);
+             break;
+         case 8:DrawNums(45, num8);
+             break;
+         case 9:DrawNums(45, num9);
+             break;
+         case 0: DrawNums(45, num0);
+             break;
+         default:
+             break;
+         }
 
-    //angle5 += 0.1 * direction;  // or some other value.  Higher numbers = circles faster
+         switch (second)
+         {
+         case 1: DrawNums(20, num1);
+             break;
+         case 2:DrawNums(20, num2);
+             break;
+         case 3:DrawNums(20, num3);
+             break;
+         case 4:DrawNums(20, num4);
+             break;
+         case 5:DrawNums(20, num5);
+             break;
+         case 6:DrawNums(20, num6);
+             break;
+         case 7:DrawNums(20, num7);
+             break;
+         case 8:DrawNums(20, num8);
+             break;
+         case 9:DrawNums(20, num9);
+             break;
+         case 0:DrawNums(20, num0);
+             break;
+         default:
+             break;
+         }
+         
 
-    //double x5 = cos(angle5) * r;
-    //double y5 = sin(angle5) * r;
+ 
 
-    //x5 += x;
-    //y5 += y;
-    //FillCircle((int)x5, (int)y5, 3, 0xffffff);
-    //
 }
 
 void FillRect(int32_t x, int32_t y, int32_t h, int32_t w, int32_t color)
 {  
-    if (x >= SCREEN_WIDTH || y <= 0)
+    if (x >= SCREEN_WIDTH-50 || y <= 0 || x <=0 )
     {
-        //что кубик вне игры
+        rectPlay = false;
         return;
     }
 
-    for (size_t i = y - h; i <= y    ; i++)
+    for (size_t i = y - h; i <= y ; i++)
     {
         for (size_t k =  x  ; k <= x + w; k++)
         {
            buffer[i][k] = color;
         }
     }
+}
+
+void DrawNums(  int32_t pos , uint32_t num[][20])
+{
+  
+    for (size_t i = 20, j = 0; i < 40; i++, j++)
+    {
+        for (size_t k = SCREEN_WIDTH - pos, c =0; k < SCREEN_WIDTH; k++, c++)
+        {
+            if(c < 20)
+            buffer[i][k] =  num  [j][c];
+        }
+    }
+
 }
